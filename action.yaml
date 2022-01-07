@@ -20,10 +20,14 @@ inputs:
   ecr_image_name:
     description: Define the repository of the ECR image
     required: true
+  working_directory:
+    description: Define the directory
+    required: true
+    
 runs:
   using: "composite"
   steps:
-    - name: Check if @meetlara/deploy is on the message
+    - name: Check if @meetlara/lambdas-deploy is on the message
       uses: khan/pull-request-comment-trigger@master
       id: check
       env:
@@ -48,12 +52,14 @@ runs:
         echo "::set-output name=sha::$(git rev-parse HEAD)"
     
     - name: Deploy lambda
+      if: steps.check.outputs.triggered == 'true'
       uses: meetlara/lambda-deploy@main
       with:
         lambda_names: ${{ inputs.lambda_names}}
         ecr_image_name: ${{ inputs.ecr_image_name}}
         aws_access_key_id: ${{ inputs.aws_access_key_id}}
         aws_secret_access_key: ${{ inputs.aws_secret_access_key}}
+        working_directory: ${{ inputs.working_directory}}
 
     - name: Message success
       if: ${{ steps.check.outputs.triggered == 'true' && success() }}
