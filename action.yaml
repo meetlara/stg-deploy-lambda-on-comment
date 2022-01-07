@@ -7,7 +7,7 @@ inputs:
   match_comment_to_deploy:
     description: String that will look for in the PR
     required: false
-    default: '@meetlara/deploy-lambdas'
+    default: '@meetlara/lambdas-deploy'
   lambda_names:
     description: Function names separated by comma
     required: true
@@ -66,7 +66,7 @@ runs:
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
-            body: 'Deployment succeeded! 🚀\n\nYou can check the deploy logs [here](https://github.com/' + context.repo.owner + '/' + context.repo.repo + '/actions/runs/' + context.runId + ')\n\nRemember, it\'s not deployed yet. AWS is doing some magic and in 2 mins it will be available 😄',
+            body: 'Deployment lambdas succeeded! 🚀\n\nYou can check the deploy logs [here](https://github.com/' + context.repo.owner + '/' + context.repo.repo + '/actions/runs/' + context.runId + ')\n\nRemember, it\'s not deployed yet. AWS is doing some magic and in 2 mins it will be available 😄',
           });
       
     - name: Message failure
@@ -80,5 +80,5 @@ runs:
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
-            body: 'Deployment failed! ❌\n\nYou can check errors on deploy logs [here](https://github.com/' + context.repo.owner + '/' + context.repo.repo + '/actions/runs/' + context.runId + ')',
+            body: 'Deployment lambdas failed! ❌\n\nYou can check errors on deploy logs [here](https://github.com/' + context.repo.owner + '/' + context.repo.repo + '/actions/runs/' + context.runId + ')',
           });
