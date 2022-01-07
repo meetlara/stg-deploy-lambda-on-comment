@@ -1,0 +1,84 @@
+name: Staging Deploy Lambdas on PR Comment
+description: "Work only for PR comments"
+inputs:
+  github_token:
+    description: Github token to write comments on PR. Commonly secrets.GITHUB_TOKEN
+    required: true
+  match_comment_to_deploy:
+    description: String that will look for in the PR
+    required: false
+    default: '@meetlara/deploy-lambdas'
+  lambda_names:
+    description: Function names separated by comma
+    required: true
+  aws_access_key_id:
+    description: AWS Key ID
+    required: true
+  aws_secret_access_key:
+    description: AWS Secret Access Key
+    required: true
+  ecr_image_name:
+    description: Define the repository of the ECR image
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Check if @meetlara/deploy is on the message
+      uses: khan/pull-request-comment-trigger@master
+      id: check
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }}
+      with:
+        trigger: ${{ inputs.match_comment_to_deploy }}
+        prefix_only: true
+        reaction: 'rocket'
+
+    - name: Checkout
+      if: steps.check.outputs.triggered == 'true'
+      uses: actions/checkout@v2
+    
+    - name: Checkout Pull Request
+      shell: bash
+      id: commit
+      if: steps.check.outputs.triggered == 'true'
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }}
+      run: |
+        hub pr checkout ${{ github.event.issue.number }}
+        echo "::set-output name=sha::$(git rev-parse HEAD)"
+    
+    - name: Deploy lambda
+      uses: meetlara/lambda-deploy@main
+      with:
+        lambda_names: ${{ inputs.lambda_names}}
+        ecr_repository: ${{ inputs.ecr_image_name}}
+        aws_access_key_id: ${{ inputs.aws_access_key_id}}
+        aws_secret_access_key: ${{ inputs.aws_secret_access_key}}
+
+    - name: Message success
+      if: ${{ steps.check.outputs.triggered == 'true' && success() }}
+      uses: actions/github-script@v4
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }}
+      with:
+        script: |
+          github.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: 'Deployment succeeded! 🚀\n\nYou can check the deploy logs [here](https://github.com/' + context.repo.owner + '/' + context.repo.repo + '/actions/runs/' + context.runId + ')\n\nRemember, it\'s not deployed yet. AWS is doing some magic and in 2 mins it will be available 😄',
+          });
+      
+    - name: Message failure
+      if: ${{ steps.check.outputs.triggered == 'true' && failure() }}
+      uses: actions/github-script@v4
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }}
+      with:
+        script: |
+          github.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: 'Deployment failed! ❌\n\nYou can check errors on deploy logs [here](https://github.com/' + context.repo.owner + '/' + context.repo.repo + '/actions/runs/' + context.runId + ')',
+          });
