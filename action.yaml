@@ -51,7 +51,7 @@ runs:
       uses: meetlara/lambda-deploy@main
       with:
         lambda_names: ${{ inputs.lambda_names}}
-        ecr_repository: ${{ inputs.ecr_image_name}}
+        ecr_image_name: ${{ inputs.ecr_image_name}}
         aws_access_key_id: ${{ inputs.aws_access_key_id}}
         aws_secret_access_key: ${{ inputs.aws_secret_access_key}}
 
