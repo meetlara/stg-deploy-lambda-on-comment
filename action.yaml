@@ -20,6 +20,9 @@ inputs:
   ecr_image_name:
     description: Define the repository of the ECR image
     required: true
+  ecr_image_tag:
+    description: Define the tag of ECR image
+    required: true
   working_directory:
     description: Define the directory
     required: true
@@ -59,6 +62,7 @@ runs:
       with:
         lambda_names: ${{ inputs.lambda_names }}
         ecr_image_name: ${{ inputs.ecr_image_name }}
+        ecr_image_tag: ${{ inputs.ecr_image_tag }}
         aws_access_key_id: ${{ inputs.aws_access_key_id }}
         aws_secret_access_key: ${{ inputs.aws_secret_access_key }}
         working_directory: ${{ inputs.working_directory }}
