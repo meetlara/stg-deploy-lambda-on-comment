@@ -50,6 +50,8 @@ runs:
       run: |
         hub pr checkout ${{ github.event.issue.number }}
         echo "::set-output name=sha::$(git rev-parse HEAD)"
+        ls
+        echo $(pwd)
     
     - name: Deploy lambda
       if: steps.check.outputs.triggered == 'true'
