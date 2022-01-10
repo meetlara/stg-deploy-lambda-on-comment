@@ -7,7 +7,7 @@ inputs:
   match_comment_to_deploy:
     description: String that will look for in the PR
     required: false
-    default: '@meetlara/lambdas-deploy'
+    default: '@meetlara/deploy-lambda'
   lambda_names:
     description: Function names separated by comma
     required: true
