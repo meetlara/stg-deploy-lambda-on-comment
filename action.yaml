@@ -60,7 +60,7 @@ runs:
       with:
         lambda_names: ${{ inputs.lambda_names }}
         ecr_image_name: ${{ inputs.ecr_image_name }}
-        ecr_image_tag: ${{ inputs.ecr_image_tag }}
+        ecr_image_tag: ${{ steps.commit.outputs.sha }}
         aws_access_key_id: ${{ inputs.aws_access_key_id }}
         aws_secret_access_key: ${{ inputs.aws_secret_access_key }}
         working_directory: ${{ inputs.working_directory }}
