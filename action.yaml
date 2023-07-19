@@ -56,14 +56,14 @@ runs:
     
     - name: Deploy lambda
       if: steps.check.outputs.triggered == 'true'
-      uses: meetlara/lambda-deploy@main
+      uses: meetlara/lambda-deploy@v2
       with:
         lambda_names: ${{ inputs.lambda_names }}
         ecr_image_name: ${{ inputs.ecr_image_name }}
         ecr_image_tag: ${{ steps.commit.outputs.sha }}
         aws_access_key_id: ${{ inputs.aws_access_key_id }}
         aws_secret_access_key: ${{ inputs.aws_secret_access_key }}
-        working_directory: ${{ inputs.working_directory }}
+        build_working_directory: ${{ inputs.working_directory }}
 
     - name: Message success
       if: ${{ steps.check.outputs.triggered == 'true' && success() }}
