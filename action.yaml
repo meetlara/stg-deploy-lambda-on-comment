@@ -49,11 +49,13 @@ runs:
       uses: actions/checkout@v4
 
     - name: Checkout Pull Request
+      shell: bash
       id: commit
       if: steps.check.outputs.triggered == 'true'
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
       run: |
+        sudo apt install hub
         hub pr checkout ${{ github.event.issue.number }}
         echo "::set-output name=sha::$(git rev-parse HEAD)"
 
