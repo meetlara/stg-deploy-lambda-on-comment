@@ -45,13 +45,12 @@ runs:
       uses: actions/checkout@v2
     
     - name: Checkout Pull Request
-      shell: bash
       id: commit
       if: steps.check.outputs.triggered == 'true'
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
       run: |
-        hub pr checkout ${{ github.event.issue.number }}
+        hub pr list
         echo "::set-output name=sha::$(git rev-parse HEAD)"
     
     - name: Deploy lambda
