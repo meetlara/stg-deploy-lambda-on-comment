@@ -49,7 +49,6 @@ runs:
       uses: actions/checkout@v4
 
     - name: Checkout Pull Request
-      shell: bash
       id: commit
       if: steps.check.outputs.triggered == 'true'
       env:
