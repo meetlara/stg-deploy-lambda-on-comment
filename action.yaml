@@ -9,7 +9,10 @@ inputs:
     required: false
     default: "deploy lambda"
   lambda_names:
-    description: Function names separated by comma
+    description: Function names separated by space
+    required: false
+  prefix_function_names:
+    description: Function prefix to match
     required: true
   aws_access_key_id:
     description: AWS Key ID
@@ -61,8 +64,9 @@ runs:
 
     - name: Deploy lambda
       if: steps.check.outputs.triggered == 'true'
-      uses: meetlara/lambda-deploy@v2
+      uses: meetlara/lambda-deploy@v3
       with:
+        prefix_function_names: ${{ inputs.prefix_function_names }}
         lambda_names: ${{ inputs.lambda_names }}
         ecr_image_name: ${{ inputs.ecr_image_name }}
         ecr_image_tag: ${{ steps.commit.outputs.sha }}
