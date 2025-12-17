@@ -74,6 +74,7 @@ runs:
         aws_access_key_id: ${{ inputs.aws_access_key_id }}
         aws_secret_access_key: ${{ inputs.aws_secret_access_key }}
         build_working_directory: ${{ inputs.build_working_directory }}
+        docker_build_extra_args: ${{ inputs.docker_build_extra_args }}
 
     - name: Message success
       if: ${{ steps.check.outputs.triggered == 'true' && success() }}
